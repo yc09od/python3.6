@@ -1,6 +1,11 @@
 from pythonping import ping, icmp
+import sys
 
+hostname = str(sys.argv[1])
+count = int(str(sys.argv[2]))
+if len(sys.argv) > 3 :
+    verbose = bool(sys.argv[3])
+else:
+    verbose = False
 
-test = ping('10.1.112.1', verbose=True, count=10)
-
-print(test.rtt_avg_ms == 2000)
+test = ping(hostname, verbose=verbose, count=count)
