@@ -1,2 +1,7 @@
 .idea
 .vscode
+
+bash.exe.*
+
+__pycache__
+.pytest_cache/
