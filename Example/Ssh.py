@@ -2,17 +2,40 @@ import base64
 import paramiko
 import sys
 
-hostname = sys.argv[1]
-port = sys.argv[2] 
-username = sys.argv[3]
-password = sys.argv[4]
+def ssh_command(ssh):
+    command = input("Command:")
+    ssh.invoke_shell()
+    stdin, stdout, stderr = ssh.exec_command(command)
+    print(stdout.read())
 
-client = paramiko.SSHClient()
-client.set_missing_host_key_policy(paramiko.AutoAddPolicy)
-client.connect(hostname, username = username, password = password, port = port)
-stdin, stdout, stderr = client.exec_command('cd /var/www/html \n pwd')
-print(stdout.readlines())
-stdin, stdout, stderr = client.exec_command('cd /var/www/html \n ls \n rm phpMyAdmin-4.8.5-all-languages.zip \n')
-print(stdout.readlines())
+def ssh_connect(host, user, key):
+    try:
+        ssh = paramiko.SSHClient()
+        print('Calling paramiko')
+        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        ssh.connect(hostname=host, username=user, password=key)
+        channel = ssh.invoke_shell()
+        stdin = channel.makefile("wb")
+        stdout = channel.makefile("rb")
+        text = ''
+        
+        while (text != 'exit'):
+            text =  input("Command:\t")
+            stdin = text
+            print(stdout.read())
+            
+    except Exception as e:
+        print('Connection Failed')
+        print(e)
+        stdout.close()
+        stdin.close()
+        ssh.close()
+
+if __name__=='__main__':
+    user = 'horst'
+    key = 'Jierdeliren@126'
+    host = "eggplantcui.ca"
     
-client.close()
+    
+    ssh_connect(host, user, key)
+    
